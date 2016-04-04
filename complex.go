@@ -95,7 +95,7 @@ func (z *Complex) Add(x, y *Complex) *Complex {
 	return z
 }
 
-// Sub method sets z to the sum of x and y, and returns z.
+// Sub method sets z to the difference of x and y, and returns z.
 func (z *Complex) Sub(x, y *Complex) *Complex {
 	for i, v := range x.__ {
 		z.__[i] = v - y.__[i]
