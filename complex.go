@@ -28,8 +28,8 @@ func (z *Complex) Equals(x *Complex) bool {
 		equals(z.__[1], x.__[1]))
 }
 
-// Clone method clones x onto z.
-func (z *Complex) Clone(x *Complex) *Complex {
+// Set method sets z equal to x.
+func (z *Complex) Set(x *Complex) *Complex {
 	for i, v := range x.__ {
 		z.__[i] = v
 	}
@@ -106,8 +106,8 @@ func (z *Complex) Sub(x, y *Complex) *Complex {
 
 // Mul method sets z to the product of x and y, and returns z.
 func (z *Complex) Mul(x, y *Complex) *Complex {
-	p := new(Complex).Clone(x)
-	q := new(Complex).Clone(y)
+	p := new(Complex).Set(x)
+	q := new(Complex).Set(y)
 	z.__[0] = (p.__[0] * q.__[0]) + (p.__[1] * q.__[1])
 	z.__[1] = (p.__[0] * q.__[1]) + (p.__[1] * q.__[0])
 
