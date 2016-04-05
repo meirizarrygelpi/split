@@ -23,10 +23,22 @@ func TestQuad(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if got := test.x.Quad(); !equals(got, test.want) {
+		if got := test.x.Quad(); notEquals(got, test.want) {
 			t.Errorf("Quad(%v) = %v, want %v", test.x, got, test.want)
 		}
 	}
+}
+
+func ExampleNew() {
+	fmt.Println(New(1, 0))
+	fmt.Println(New(0, 1))
+	fmt.Println(New(3, -1))
+	fmt.Println(New(5, 7))
+	// Output:
+	// 1
+	// 1ι
+	// 3 - 1ι
+	// 5 + 7ι
 }
 
 func ExampleAdd() {
