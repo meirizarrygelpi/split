@@ -1,6 +1,9 @@
 package split
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 const epsilon = 0.00000001
 
@@ -32,21 +35,20 @@ func (z *Complex) Set(x *Complex) *Complex {
 	return z
 }
 
-// String method returns the string version of a Complex value.
+// String method returns the string version of a Complex value. It mimics the
+// behavior for complex64 and complex128 types.
 func (z Complex) String() string {
-	if z[1] == 0 {
-		return fmt.Sprintf("%g", z[0])
-	}
-
-	if z[0] == 0 {
-		return fmt.Sprintf("%gι", z[1])
-	}
-
+	a := make([]string, 5)
+	a[0] = "("
+	a[1] = fmt.Sprintf("%g", z[0])
 	if z[1] < 0 {
-		return fmt.Sprintf("%g - %gι", z[0], -z[1])
+		a[2] = fmt.Sprintf("%g", z[1])
+	} else {
+		a[2] = fmt.Sprintf("+%g", z[1])
 	}
-
-	return fmt.Sprintf("%g + %gι", z[0], z[1])
+	a[3] = "ι"
+	a[4] = ")"
+	return strings.Join(a, "")
 }
 
 // New function returns a pointer to a Complex value made from two given real
@@ -113,4 +115,20 @@ func (z *Complex) Mul(x, y *Complex) *Complex {
 // negative, or zero.
 func (z *Complex) Quad() float64 {
 	return (new(Complex).Mul(z, new(Complex).Conj(z)))[0]
+}
+
+// IsZeroDiv method returns true if z is a zero divisor. That is, if z has
+// vanishing quadrance.
+func (z *Complex) IsZeroDiv() bool {
+	return !notEquals(z.Quad(), 0)
+}
+
+// Quo method sets z equal to the quotient x/y, and returns z. If y is a zero
+// divisor, then Quo panics.
+func (z *Complex) Quo(x, y *Complex) *Complex {
+	if y.IsZeroDiv() {
+		panic("denominator is a zero divisor")
+	}
+
+	return z.Scalar(new(Complex).Mul(x, new(Complex).Conj(y)), 1/y.Quad())
 }
