@@ -13,13 +13,13 @@ var (
 
 func TestEquals(t *testing.T) {}
 
-func TestSet(t *testing.T) {}
+func TestCopy(t *testing.T) {}
 
 func TestString(t *testing.T) {}
 
 func TestNew(t *testing.T) {}
 
-func TestScalar(t *testing.T) {}
+func TestScal(t *testing.T) {}
 
 func TestNeg(t *testing.T) {}
 
@@ -59,8 +59,8 @@ func ExampleNew() {
 	fmt.Println(New(3, -1))
 	fmt.Println(New(5, 7))
 	// Output:
-	// (1+0ι)
-	// (0-1ι)
-	// (3-1ι)
-	// (5+7ι)
+	// (1+0I)
+	// (0-1I)
+	// (3-1I)
+	// (5+7I)
 }
