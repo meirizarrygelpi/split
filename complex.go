@@ -6,12 +6,12 @@ import (
 	"strings"
 )
 
-// Complex type represents a split-complex number a + bI over the real numbers,
-// with I² = 1.
+// Complex type represents a split-complex number a + bh over the real numbers,
+// with h² = 1.
 type Complex [2]float64
 
-// String method returns the string version of a Complex value. If z = a + bI,
-// then the string is "(a+bI)", similar to complex128 values.
+// String method returns the string version of a Complex value. If z = a + bh,
+// then the string is "(a+bh)", similar to complex128 values.
 func (z *Complex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
@@ -24,7 +24,7 @@ func (z *Complex) String() string {
 	default:
 		a[2] = fmt.Sprintf("+%g", z[1])
 	}
-	a[3] = "I"
+	a[3] = "h"
 	a[4] = ")"
 	return strings.Join(a, "")
 }
@@ -132,7 +132,7 @@ func (z *Complex) Quo(x, y *Complex) *Complex {
 }
 
 // IsInf method returns true if any of the components of z are infinite. The
-// code in this method is inspired by the IsInf function in `math/cmplx`.
+// code in this method is inspired by the IsInf function in "math/cmplx".
 func (z *Complex) IsInf() bool {
 	for _, v := range z {
 		if math.IsInf(v, 0) {
@@ -142,7 +142,7 @@ func (z *Complex) IsInf() bool {
 	return false
 }
 
-// Inf function returns a pointer to a split-complex infinity, (+Inf+InfI). The
+// Inf function returns a pointer to a split-complex infinity, (+Inf+Infh). The
 // code in this function is inspired by the Inf function in "math/cmplx".
 func Inf() *Complex {
 	inf := math.Inf(1)
