@@ -131,8 +131,7 @@ func (z *Complex) Quo(x, y *Complex) *Complex {
 	return z.Scal(new(Complex).Mul(x, new(Complex).Conj(y)), 1/y.Quad())
 }
 
-// IsInf method returns true if any of the components of z are infinite. The
-// code in this method is inspired by the IsInf function in "math/cmplx".
+// IsInf method returns true if any of the components of z are infinite.
 func (z *Complex) IsInf() bool {
 	for _, v := range z {
 		if math.IsInf(v, 0) {
@@ -142,16 +141,13 @@ func (z *Complex) IsInf() bool {
 	return false
 }
 
-// Inf function returns a pointer to a split-complex infinity, (+Inf+Infh). The
-// code in this function is inspired by the Inf function in "math/cmplx".
-func Inf() *Complex {
-	inf := math.Inf(1)
-	return New(inf, inf)
+// Inf function returns a pointer to a split-complex infinity value.
+func Inf(a, b int) *Complex {
+	return New(math.Inf(a), math.Inf(b))
 }
 
 // IsNaN method returns true if any component of z is NaN and neither is an
-// infinity. The code in this method is inspired by the IsNaN function in
-// "math/cmplx".
+// infinity.
 func (z *Complex) IsNaN() bool {
 	for _, v := range z {
 		if math.IsInf(v, 0) {
@@ -166,8 +162,7 @@ func (z *Complex) IsNaN() bool {
 	return false
 }
 
-// NaN function returns a pointer to a split-complex NaN value. The code in this
-// function is inspired by the NaN function in "math/cmplx".
+// NaN function returns a pointer to a split-complex NaN value.
 func NaN() *Complex {
 	nan := math.NaN()
 	return New(nan, nan)
