@@ -59,8 +59,8 @@ func ExampleNew() {
 	fmt.Println(New(3, -1))
 	fmt.Println(New(5, 7))
 	// Output:
-	// (1+0h)
-	// (0-1h)
-	// (3-1h)
-	// (5+7h)
+	// (1+0s)
+	// (0-1s)
+	// (3-1s)
+	// (5+7s)
 }

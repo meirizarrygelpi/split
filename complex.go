@@ -6,25 +6,25 @@ import (
 	"strings"
 )
 
-// Complex type represents a split-complex number a + bh over the real numbers,
-// with h² = 1.
+// Complex type represents a split-complex number a + bs over the real numbers,
+// with s² = 1.
 type Complex [2]float64
 
-// String method returns the string version of a Complex value. If z = a + bh,
-// then the string is "(a+bh)", similar to complex128 values.
+// String method returns the string version of a Complex value. If z = a + bs,
+// then the string is "(a+bs)", similar to complex128 values.
 func (z *Complex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
 	a[1] = fmt.Sprintf("%g", z[0])
 	switch {
+	case math.Signbit(z[1]):
+		a[2] = fmt.Sprintf("%g", z[1])
 	case math.IsInf(z[1], +1):
 		a[2] = "+Inf"
-	case z[1] < 0:
-		a[2] = fmt.Sprintf("%g", z[1])
 	default:
 		a[2] = fmt.Sprintf("+%g", z[1])
 	}
-	a[3] = "h"
+	a[3] = "s"
 	a[4] = ")"
 	return strings.Join(a, "")
 }
