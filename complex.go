@@ -6,12 +6,12 @@ import (
 	"strings"
 )
 
-// Complex type represents a split-complex number a + bs over the real numbers,
-// with s² = 1.
+// A Complex represents a split-complex number as an ordered array of float64
+// values.
 type Complex [2]float64
 
-// String method returns the string version of a Complex value. If z = a + bs,
-// then the string is "(a+bs)", similar to complex128 values.
+// String returns the string version of a Complex value. If z = a + bs, then
+// the string is "(a+bs)", similar to complex128 values.
 func (z *Complex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
@@ -29,7 +29,7 @@ func (z *Complex) String() string {
 	return strings.Join(a, "")
 }
 
-// Equals method returns true if z and x are equal.
+// Equals returns true if z and x are equal.
 func (z *Complex) Equals(x *Complex) bool {
 	for i, v := range x {
 		if notEquals(v, z[i]) {
@@ -39,7 +39,7 @@ func (z *Complex) Equals(x *Complex) bool {
 	return true
 }
 
-// Copy method copies x onto z, and returns z.
+// Copy copies x onto z, and returns z.
 func (z *Complex) Copy(x *Complex) *Complex {
 	for i, v := range x {
 		z[i] = v
@@ -47,8 +47,8 @@ func (z *Complex) Copy(x *Complex) *Complex {
 	return z
 }
 
-// New function returns a pointer to a Complex value made from two given real
-// numbers (i.e. float64s).
+// New returns a pointer to a Complex value made from two given real float64
+// values.
 func New(a, b float64) *Complex {
 	z := new(Complex)
 	z[0] = a
@@ -56,82 +56,7 @@ func New(a, b float64) *Complex {
 	return z
 }
 
-// Scal method sets z equal to x scaled by a, and returns z.
-func (z *Complex) Scal(x *Complex, a float64) *Complex {
-	for i, v := range x {
-		z[i] = a * v
-	}
-	return z
-}
-
-// Neg method sets z equal to the negative of x, and returns z.
-func (z *Complex) Neg(x *Complex) *Complex {
-	return z.Scal(x, -1)
-}
-
-// Conj method sets z equal to the conjugate of x, and returns z.
-func (z *Complex) Conj(x *Complex) *Complex {
-	z[0] = +x[0]
-	z[1] = -x[1]
-	return z
-}
-
-// Add method sets z to the sum of x and y, and returns z.
-func (z *Complex) Add(x, y *Complex) *Complex {
-	for i, v := range x {
-		z[i] = v + y[i]
-	}
-	return z
-}
-
-// Sub method sets z to the difference of x and y, and returns z.
-func (z *Complex) Sub(x, y *Complex) *Complex {
-	for i, v := range x {
-		z[i] = v - y[i]
-	}
-	return z
-}
-
-// Mul method sets z to the product of x and y, and returns z.
-func (z *Complex) Mul(x, y *Complex) *Complex {
-	p := new(Complex).Copy(x)
-	q := new(Complex).Copy(y)
-	z[0] = (p[0] * q[0]) + (p[1] * q[1])
-	z[1] = (p[0] * q[1]) + (p[1] * q[0])
-	return z
-}
-
-// Quad method returns the quadrance of z, which can be either positive,
-// negative, or zero.
-func (z *Complex) Quad() float64 {
-	return (new(Complex).Mul(z, new(Complex).Conj(z)))[0]
-}
-
-// IsZeroDiv method returns true if z is a zero divisor (i.e. if z has
-// vanishing quadrance).
-func (z *Complex) IsZeroDiv() bool {
-	return !notEquals(z.Quad(), 0)
-}
-
-// Inv method sets z equal to the inverse of x, and returns z. If x is a zero
-// divisor, then Inv panics.
-func (z *Complex) Inv(x *Complex) *Complex {
-	if x.IsZeroDiv() {
-		panic("zero divisor has no unique inverse")
-	}
-	return z.Scal(new(Complex).Conj(x), 1/x.Quad())
-}
-
-// Quo method sets z equal to the quotient x/y, and returns z. If y is a zero
-// divisor, then Quo panics.
-func (z *Complex) Quo(x, y *Complex) *Complex {
-	if y.IsZeroDiv() {
-		panic("denominator is a zero divisor")
-	}
-	return z.Scal(new(Complex).Mul(x, new(Complex).Conj(y)), 1/y.Quad())
-}
-
-// IsInf method returns true if any of the components of z are infinite.
+// IsInf returns true if any of the components of z are infinite.
 func (z *Complex) IsInf() bool {
 	for _, v := range z {
 		if math.IsInf(v, 0) {
@@ -141,13 +66,12 @@ func (z *Complex) IsInf() bool {
 	return false
 }
 
-// Inf function returns a pointer to a split-complex infinity value.
+// Inf returns a pointer to a split-complex infinity value.
 func Inf(a, b int) *Complex {
 	return New(math.Inf(a), math.Inf(b))
 }
 
-// IsNaN method returns true if any component of z is NaN and neither is an
-// infinity.
+// IsNaN returns true if any component of z is NaN and neither is an infinity.
 func (z *Complex) IsNaN() bool {
 	for _, v := range z {
 		if math.IsInf(v, 0) {
@@ -162,8 +86,88 @@ func (z *Complex) IsNaN() bool {
 	return false
 }
 
-// NaN function returns a pointer to a split-complex NaN value.
+// NaN returns a pointer to a split-complex NaN value.
 func NaN() *Complex {
 	nan := math.NaN()
 	return New(nan, nan)
+}
+
+// Scal sets z equal to x scaled by a, and returns z.
+func (z *Complex) Scal(x *Complex, a float64) *Complex {
+	for i, v := range x {
+		z[i] = a * v
+	}
+	return z
+}
+
+// Neg sets z equal to the negative of x, and returns z.
+func (z *Complex) Neg(x *Complex) *Complex {
+	return z.Scal(x, -1)
+}
+
+// Conj sets z equal to the conjugate of x, and returns z.
+func (z *Complex) Conj(x *Complex) *Complex {
+	z[0] = +x[0]
+	z[1] = -x[1]
+	return z
+}
+
+// Add sets z to the sum of x and y, and returns z.
+func (z *Complex) Add(x, y *Complex) *Complex {
+	for i, v := range x {
+		z[i] = v + y[i]
+	}
+	return z
+}
+
+// Sub sets z to the difference of x and y, and returns z.
+func (z *Complex) Sub(x, y *Complex) *Complex {
+	for i, v := range x {
+		z[i] = v - y[i]
+	}
+	return z
+}
+
+// Mul sets z to the product of x and y, and returns z.
+func (z *Complex) Mul(x, y *Complex) *Complex {
+	p := new(Complex).Copy(x)
+	q := new(Complex).Copy(y)
+	z[0] = (p[0] * q[0]) + (p[1] * q[1])
+	z[1] = (p[0] * q[1]) + (p[1] * q[0])
+	return z
+}
+
+// Quad returns the quadrance of z, which can be either positive, negative, or
+// zero.
+func (z *Complex) Quad() float64 {
+	return (new(Complex).Mul(z, new(Complex).Conj(z)))[0]
+}
+
+// IsZeroDiv returns true if z is a zero divisor (i.e. if z has vanishing
+// quadrance).
+func (z *Complex) IsZeroDiv() bool {
+	return !notEquals(z.Quad(), 0)
+}
+
+// Inv sets z equal to the inverse of x, and returns z. If x is a zero divisor,
+// then Inv panics.
+func (z *Complex) Inv(x *Complex) *Complex {
+	if x.IsZeroDiv() {
+		panic("zero divisor has no unique inverse")
+	}
+	return z.Scal(new(Complex).Conj(x), 1/x.Quad())
+}
+
+// Quo sets z equal to the quotient x/y, and returns z. If y is a zero divisor,
+// then Quo panics.
+func (z *Complex) Quo(x, y *Complex) *Complex {
+	if y.IsZeroDiv() {
+		panic("denominator is a zero divisor")
+	}
+	return z.Scal(new(Complex).Mul(x, new(Complex).Conj(y)), 1/y.Quad())
+}
+
+// IsIndempotent returns true if z is an indempotent (i.e. if z = z*z).
+func (z *Complex) IsIndempotent() bool {
+	return z.Equals(new(Complex).Mul(z, z))
 }
