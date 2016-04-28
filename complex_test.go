@@ -64,3 +64,7 @@ func ExampleNew() {
 	// (3-1s)
 	// (5+7s)
 }
+
+func TestRect(t *testing.T) {}
+
+func TestCurv(t *testing.T) {}
