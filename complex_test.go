@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	zero = New(0, 0)
-	e0   = New(1, 0)
-	e1   = New(0, 1)
+	zero = &Complex{0, 0}
+	one  = &Complex{1, 0}
+	s    = &Complex{0, 1}
 )
 
 func TestEquals(t *testing.T) {}
@@ -37,9 +37,9 @@ func TestQuad(t *testing.T) {
 		want float64
 	}{
 		{zero, 0},
-		{e0, 1},
-		{e1, -1},
-		{New(1, 1), 0},
+		{one, 1},
+		{s, -1},
+		{&Complex{1, 1}, 0},
 	}
 
 	for _, test := range tests {

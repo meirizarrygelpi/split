@@ -171,3 +171,40 @@ func (z *Complex) Quo(x, y *Complex) *Complex {
 func (z *Complex) IsIndempotent() bool {
 	return z.Equals(new(Complex).Mul(z, z))
 }
+
+// Rect sets z equal to a Complex value made from given curvilinear coordinates
+// and quadrance sign, and returns z.
+func (z *Complex) Rect(r, ξ float64, sign int) *Complex {
+	if sign > 0 {
+		z[0] = r * math.Cosh(ξ)
+		z[1] = r * math.Sinh(ξ)
+		return z
+	}
+	if sign < 0 {
+		z[0] = r * math.Sinh(ξ)
+		z[1] = r * math.Cosh(ξ)
+		return z
+	}
+	z[0] = r
+	z[1] = r
+	return z
+}
+
+// Curv returns the curvilinear coordinates of a Complex value, along with the
+// sign of the quadrance.
+func (z *Complex) Curv() (r, ξ float64, sign int) {
+	quad := z.Quad()
+	if quad > 0 {
+		r = math.Sqrt((z[0] * z[0]) - (z[1] * z[1]))
+		ξ = math.Atanh(z[1] / z[0])
+		sign = +1
+		return
+	}
+	if quad < 0 {
+		r = math.Sqrt((z[1] * z[1]) - (z[0] * z[0]))
+		ξ = math.Atanh(z[0] / z[1])
+		sign = -1
+		return
+	}
+	return z[0], math.NaN(), 0
+}
