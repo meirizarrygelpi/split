@@ -32,21 +32,18 @@ func (z *Complex) String() string {
 	return strings.Join(a, "")
 }
 
-// Equals returns true if z and x are equal.
-func (z *Complex) Equals(x *Complex) bool {
-	for i, v := range x {
-		if notEquals(v, z[i]) {
-			return false
-		}
+// Equals returns true if y and z are equal.
+func (z *Complex) Equals(y *Complex) bool {
+	if notEquals(z[0], y[0]) || notEquals(z[1], y[1]) {
+		return false
 	}
 	return true
 }
 
-// Copy copies x onto z, and returns z.
-func (z *Complex) Copy(x *Complex) *Complex {
-	for i, v := range x {
-		z[i] = v
-	}
+// Copy copies y onto z, and returns z.
+func (z *Complex) Copy(y *Complex) *Complex {
+	z[0] = y[0]
+	z[1] = y[1]
 	return z
 }
 
@@ -61,30 +58,27 @@ func New(a, b float64) *Complex {
 
 // IsInf returns true if any of the components of z are infinite.
 func (z *Complex) IsInf() bool {
-	for _, v := range z {
-		if math.IsInf(v, 0) {
-			return true
-		}
+	if math.IsInf(z[0], 0) || math.IsInf(z[1], 0) {
+		return true
 	}
 	return false
 }
 
 // Inf returns a pointer to a split-complex infinity value.
 func Inf(a, b int) *Complex {
-	return New(math.Inf(a), math.Inf(b))
+	z := new(Complex)
+	z[0] = math.Inf(a)
+	z[1] = math.Inf(b)
+	return z
 }
 
 // IsNaN returns true if any component of z is NaN and neither is an infinity.
 func (z *Complex) IsNaN() bool {
-	for _, v := range z {
-		if math.IsInf(v, 0) {
-			return false
-		}
+	if math.IsInf(z[0], 0) || math.IsInf(z[1], 0) {
+		return false
 	}
-	for _, v := range z {
-		if math.IsNaN(v) {
-			return true
-		}
+	if math.IsNaN(z[0]) || math.IsNaN(z[1]) {
+		return true
 	}
 	return false
 }
@@ -92,42 +86,42 @@ func (z *Complex) IsNaN() bool {
 // NaN returns a pointer to a split-complex NaN value.
 func NaN() *Complex {
 	nan := math.NaN()
-	return New(nan, nan)
-}
-
-// Scal sets z equal to x scaled by a, and returns z.
-func (z *Complex) Scal(x *Complex, a float64) *Complex {
-	for i, v := range x {
-		z[i] = a * v
-	}
+	z := new(Complex)
+	z[0] = nan
+	z[1] = nan
 	return z
 }
 
-// Neg sets z equal to the negative of x, and returns z.
-func (z *Complex) Neg(x *Complex) *Complex {
-	return z.Scal(x, -1)
+// Scal sets z equal to y scaled by a, and returns z.
+func (z *Complex) Scal(y *Complex, a float64) *Complex {
+	z[0] = y[0] * a
+	z[1] = y[1] * a
+	return z
 }
 
-// Conj sets z equal to the conjugate of x, and returns z.
-func (z *Complex) Conj(x *Complex) *Complex {
-	z[0] = +x[0]
-	z[1] = -x[1]
+// Neg sets z equal to the negative of y, and returns z.
+func (z *Complex) Neg(y *Complex) *Complex {
+	return z.Scal(y, -1)
+}
+
+// Conj sets z equal to the conjugate of y, and returns z.
+func (z *Complex) Conj(y *Complex) *Complex {
+	z[0] = +y[0]
+	z[1] = -y[1]
 	return z
 }
 
 // Add sets z to the sum of x and y, and returns z.
 func (z *Complex) Add(x, y *Complex) *Complex {
-	for i, v := range x {
-		z[i] = v + y[i]
-	}
+	z[0] = x[0] + y[0]
+	z[1] = x[1] + y[1]
 	return z
 }
 
 // Sub sets z to the difference of x and y, and returns z.
 func (z *Complex) Sub(x, y *Complex) *Complex {
-	for i, v := range x {
-		z[i] = v - y[i]
-	}
+	z[0] = x[0] - y[0]
+	z[1] = x[1] - y[1]
 	return z
 }
 
