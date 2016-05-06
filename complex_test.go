@@ -14,6 +14,36 @@ var (
 	s    = &Complex{0, 1}
 )
 
+func ExampleNew() {
+	fmt.Println(New(1, 0))
+	fmt.Println(New(0, -1))
+	fmt.Println(New(3, -1))
+	fmt.Println(New(5, 7))
+	// Output:
+	// (1+0s)
+	// (0-1s)
+	// (3-1s)
+	// (5+7s)
+}
+
+func ExampleInf() {
+	fmt.Println(Inf(-1, -1))
+	fmt.Println(Inf(-1, +1))
+	fmt.Println(Inf(+1, -1))
+	fmt.Println(Inf(+1, +1))
+	// Output:
+	// (-Inf-Infs)
+	// (-Inf+Infs)
+	// (+Inf-Infs)
+	// (+Inf+Infs)
+}
+
+func ExampleNaN() {
+	fmt.Println(NaN())
+	// Output:
+	// (NaN+NaNs)
+}
+
 func TestString(t *testing.T) {
 	var tests = []struct {
 		z    *Complex
@@ -35,25 +65,9 @@ func TestEquals(t *testing.T) {}
 
 func TestCopy(t *testing.T) {}
 
-func ExampleNew() {
-	fmt.Println(New(1, 0))
-	fmt.Println(New(0, -1))
-	fmt.Println(New(3, -1))
-	fmt.Println(New(5, 7))
-	// Output:
-	// (1+0s)
-	// (0-1s)
-	// (3-1s)
-	// (5+7s)
-}
-
 func TestIsInf(t *testing.T) {}
 
-func TestInf(t *testing.T) {}
-
 func TestIsNaN(t *testing.T) {}
-
-func TestNaN(t *testing.T) {}
 
 func TestScal(t *testing.T) {}
 
@@ -91,8 +105,20 @@ func TestInv(t *testing.T) {}
 
 func TestQuo(t *testing.T) {}
 
-func TestIsIndempotent(t *testing.T) {}
-
-func ExampleRect() {}
+func TestIdempotence(t *testing.T) {
+	var tests = []struct {
+		sign int
+		want bool
+	}{
+		{-1, true},
+		{+1, true},
+	}
+	for _, test := range tests {
+		z := new(Complex).Idempotent(test.sign)
+		if got := z.Equals(new(Complex).Mul(z, z)); got != test.want {
+			t.Errorf("Idempotent(%v) is not idempotent", test.sign)
+		}
+	}
+}
 
 func TestCurv(t *testing.T) {}

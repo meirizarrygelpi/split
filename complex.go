@@ -170,15 +170,20 @@ func (z *Complex) Quo(x, y *Complex) *Complex {
 	return z.Scal(new(Complex).Mul(x, new(Complex).Conj(y)), 1/y.Quad())
 }
 
-// IsIndempotent returns true if z is an indempotent (i.e. if z = z*z).
-func (z *Complex) IsIndempotent() bool {
-	return z.Equals(new(Complex).Mul(z, z))
+// Idempotent sets z equal to one of two possible idempotents (i.e. z = z*z).
+func (z *Complex) Idempotent(sign int) *Complex {
+	z[0] = 0.5
+	if sign < 0 {
+		z[1] = -0.5
+	} else {
+		z[1] = 0.5
+	}
+	return z
 }
 
-// Rect returns a Complex value made from given curvilinear coordinates and
-// quadrance sign.
-func Rect(r, ξ float64, sign int) *Complex {
-	z := new(Complex)
+// Rect sets z equal to the Complex value made from given curvilinear
+// coordinates and quadrance sign, and returns z.
+func (z *Complex) Rect(r, ξ float64, sign int) *Complex {
 	if sign > 0 {
 		z[0] = r * math.Cosh(ξ)
 		z[1] = r * math.Sinh(ξ)
@@ -189,6 +194,7 @@ func Rect(r, ξ float64, sign int) *Complex {
 		z[1] = r * math.Cosh(ξ)
 		return z
 	}
+	// sign = 0
 	z[0] = r
 	z[1] = r
 	return z
