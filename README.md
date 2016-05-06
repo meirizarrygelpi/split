@@ -10,4 +10,3 @@ Package `split` brings [split-complex numbers](https://en.wikipedia.org/wiki/Spl
 1. Improve documentation
 1. Tests
 1. Improve README
-1. Add LICENSE
