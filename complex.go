@@ -9,28 +9,29 @@ import (
 	"strings"
 )
 
-// A Complex represents a split-complex number as an ordered array of float64
-// values.
-type Complex [2]float64
+// A Complex represents a split-complex number.
+type Complex struct {
+	a, b float64
+}
 
 // Real returns the real part of z, a float64 value.
 func (z *Complex) Real() float64 {
-	return z[0]
+	return z.a
 }
 
 // Imag returns the imaginary part of z, a float64 value.
 func (z *Complex) Imag() float64 {
-	return z[1]
+	return z.b
 }
 
 // SetReal sets the real part of z equal to a.
 func (z *Complex) SetReal(a float64) {
-	z[0] = a
+	z.a = a
 }
 
 // SetImag sets the imaginary part of z equal to b.
 func (z *Complex) SetImag(b float64) {
-	z[1] = b
+	z.b = b
 }
 
 // String returns the string version of a Complex value. If z = a + bs, then
@@ -209,8 +210,8 @@ func (z *Complex) Rect(r, ξ float64, sign int) *Complex {
 		return z
 	}
 	// sign = 0
-	z[0] = r
-	z[1] = r
+	z.SetReal(r)
+	z.SetImag(r)
 	return z
 }
 
