@@ -13,19 +13,39 @@ import (
 // values.
 type Complex [2]float64
 
+// Real returns the real part of z, a float64 value.
+func (z *Complex) Real() float64 {
+	return z[0]
+}
+
+// Imag returns the imaginary part of z, a float64 value.
+func (z *Complex) Imag() float64 {
+	return z[1]
+}
+
+// SetReal sets the real part of z equal to a.
+func (z *Complex) SetReal(a float64) {
+	z[0] = a
+}
+
+// SetImag sets the imaginary part of z equal to b.
+func (z *Complex) SetImag(b float64) {
+	z[1] = b
+}
+
 // String returns the string version of a Complex value. If z = a + bs, then
 // the string is "(a+bs)", similar to complex128 values.
 func (z *Complex) String() string {
 	a := make([]string, 5)
 	a[0] = "("
-	a[1] = fmt.Sprintf("%g", z[0])
+	a[1] = fmt.Sprintf("%g", z.Real())
 	switch {
-	case math.Signbit(z[1]):
-		a[2] = fmt.Sprintf("%g", z[1])
-	case math.IsInf(z[1], +1):
+	case math.Signbit(z.Imag()):
+		a[2] = fmt.Sprintf("%g", z.Imag())
+	case math.IsInf(z.Imag(), +1):
 		a[2] = "+Inf"
 	default:
-		a[2] = fmt.Sprintf("+%g", z[1])
+		a[2] = fmt.Sprintf("+%g", z.Imag())
 	}
 	a[3] = "s"
 	a[4] = ")"
@@ -34,7 +54,7 @@ func (z *Complex) String() string {
 
 // Equals returns true if y and z are equal.
 func (z *Complex) Equals(y *Complex) bool {
-	if notEquals(z[0], y[0]) || notEquals(z[1], y[1]) {
+	if notEquals(z.Real(), y.Real()) || notEquals(z.Imag(), y.Imag()) {
 		return false
 	}
 	return true
@@ -42,8 +62,8 @@ func (z *Complex) Equals(y *Complex) bool {
 
 // Copy copies y onto z, and returns z.
 func (z *Complex) Copy(y *Complex) *Complex {
-	z[0] = y[0]
-	z[1] = y[1]
+	z.SetReal(y.Real())
+	z.SetImag(y.Imag())
 	return z
 }
 
@@ -51,14 +71,14 @@ func (z *Complex) Copy(y *Complex) *Complex {
 // values.
 func New(a, b float64) *Complex {
 	z := new(Complex)
-	z[0] = a
-	z[1] = b
+	z.SetReal(a)
+	z.SetImag(b)
 	return z
 }
 
 // IsInf returns true if any of the components of z are infinite.
 func (z *Complex) IsInf() bool {
-	if math.IsInf(z[0], 0) || math.IsInf(z[1], 0) {
+	if math.IsInf(z.Real(), 0) || math.IsInf(z.Imag(), 0) {
 		return true
 	}
 	return false
@@ -67,17 +87,17 @@ func (z *Complex) IsInf() bool {
 // Inf returns a pointer to a split-complex infinity value.
 func Inf(a, b int) *Complex {
 	z := new(Complex)
-	z[0] = math.Inf(a)
-	z[1] = math.Inf(b)
+	z.SetReal(math.Inf(a))
+	z.SetImag(math.Inf(b))
 	return z
 }
 
 // IsNaN returns true if any component of z is NaN and neither is an infinity.
 func (z *Complex) IsNaN() bool {
-	if math.IsInf(z[0], 0) || math.IsInf(z[1], 0) {
+	if math.IsInf(z.Real(), 0) || math.IsInf(z.Imag(), 0) {
 		return false
 	}
-	if math.IsNaN(z[0]) || math.IsNaN(z[1]) {
+	if math.IsNaN(z.Real()) || math.IsNaN(z.Imag()) {
 		return true
 	}
 	return false
@@ -87,15 +107,15 @@ func (z *Complex) IsNaN() bool {
 func NaN() *Complex {
 	nan := math.NaN()
 	z := new(Complex)
-	z[0] = nan
-	z[1] = nan
+	z.SetReal(nan)
+	z.SetImag(nan)
 	return z
 }
 
 // Scal sets z equal to y scaled by a, and returns z.
 func (z *Complex) Scal(y *Complex, a float64) *Complex {
-	z[0] = y[0] * a
-	z[1] = y[1] * a
+	z.SetReal(y.Real() * a)
+	z.SetImag(y.Imag() * a)
 	return z
 }
 
@@ -106,22 +126,22 @@ func (z *Complex) Neg(y *Complex) *Complex {
 
 // Conj sets z equal to the conjugate of y, and returns z.
 func (z *Complex) Conj(y *Complex) *Complex {
-	z[0] = +y[0]
-	z[1] = -y[1]
+	z.SetReal(y.Real())
+	z.SetImag(y.Imag() * -1)
 	return z
 }
 
 // Add sets z to the sum of x and y, and returns z.
 func (z *Complex) Add(x, y *Complex) *Complex {
-	z[0] = x[0] + y[0]
-	z[1] = x[1] + y[1]
+	z.SetReal(x.Real() + y.Real())
+	z.SetImag(x.Imag() + y.Imag())
 	return z
 }
 
 // Sub sets z to the difference of x and y, and returns z.
 func (z *Complex) Sub(x, y *Complex) *Complex {
-	z[0] = x[0] - y[0]
-	z[1] = x[1] - y[1]
+	z.SetReal(x.Real() - y.Real())
+	z.SetImag(x.Imag() - y.Imag())
 	return z
 }
 
@@ -129,15 +149,15 @@ func (z *Complex) Sub(x, y *Complex) *Complex {
 func (z *Complex) Mul(x, y *Complex) *Complex {
 	p := new(Complex).Copy(x)
 	q := new(Complex).Copy(y)
-	z[0] = (p[0] * q[0]) + (p[1] * q[1])
-	z[1] = (p[0] * q[1]) + (p[1] * q[0])
+	z.SetReal((p.Real() * q.Real()) + (p.Imag() * q.Imag()))
+	z.SetImag((p.Real() * q.Imag()) + (p.Imag() * q.Real()))
 	return z
 }
 
 // Quad returns the quadrance of z, which can be either positive, negative, or
 // zero.
 func (z *Complex) Quad() float64 {
-	return (new(Complex).Mul(z, new(Complex).Conj(z)))[0]
+	return (new(Complex).Mul(z, new(Complex).Conj(z))).Real()
 }
 
 // IsZeroDiv returns true if z is a zero divisor (i.e. if z has vanishing
@@ -166,12 +186,12 @@ func (z *Complex) Quo(x, y *Complex) *Complex {
 
 // Idempotent sets z equal to one of two possible idempotents (i.e. z = z*z).
 func (z *Complex) Idempotent(sign int) *Complex {
-	z[0] = 0.5
+	z.SetReal(0.5)
 	if sign < 0 {
-		z[1] = -0.5
-	} else {
-		z[1] = 0.5
+		z.SetImag(-0.5)
+		return z
 	}
+	z.SetImag(0.5)
 	return z
 }
 
@@ -179,13 +199,13 @@ func (z *Complex) Idempotent(sign int) *Complex {
 // coordinates and quadrance sign, and returns z.
 func (z *Complex) Rect(r, ξ float64, sign int) *Complex {
 	if sign > 0 {
-		z[0] = r * math.Cosh(ξ)
-		z[1] = r * math.Sinh(ξ)
+		z.SetReal(r * math.Cosh(ξ))
+		z.SetImag(r * math.Sinh(ξ))
 		return z
 	}
 	if sign < 0 {
-		z[0] = r * math.Sinh(ξ)
-		z[1] = r * math.Cosh(ξ)
+		z.SetReal(r * math.Sinh(ξ))
+		z.SetImag(r * math.Cosh(ξ))
 		return z
 	}
 	// sign = 0
@@ -200,17 +220,17 @@ func (z *Complex) Curv() (r, ξ float64, sign int) {
 	quad := z.Quad()
 	if quad > 0 {
 		r = math.Sqrt(quad)
-		ξ = math.Atanh(z[1] / z[0])
+		ξ = math.Atanh(z.Imag() / z.Real())
 		sign = +1
 		return
 	}
 	if quad < 0 {
 		r = math.Sqrt(-quad)
-		ξ = math.Atanh(z[0] / z[1])
+		ξ = math.Atanh(z.Real() / z.Imag())
 		sign = -1
 		return
 	}
-	r = z[0]
+	r = z.Real()
 	ξ = math.NaN()
 	sign = 0
 	return
