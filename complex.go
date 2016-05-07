@@ -34,6 +34,12 @@ func (z *Complex) SetImag(b float64) {
 	z.b = b
 }
 
+// Cartesian returns the two Cartesian components of z.
+func (z *Complex) Cartesian() (a, b float64) {
+	a, b = z.a, z.b
+	return
+}
+
 // String returns the string version of a Complex value. If z = a + bs, then
 // the string is "(a+bs)", similar to complex128 values.
 func (z *Complex) String() string {
