@@ -27,10 +27,10 @@ func ExampleNew() {
 }
 
 func ExampleInf() {
-	fmt.Println(Inf(-1, -1))
-	fmt.Println(Inf(-1, +1))
-	fmt.Println(Inf(+1, -1))
-	fmt.Println(Inf(+1, +1))
+	fmt.Println(new(Complex).Inf(-1, -1))
+	fmt.Println(new(Complex).Inf(-1, +1))
+	fmt.Println(new(Complex).Inf(+1, -1))
+	fmt.Println(new(Complex).Inf(+1, +1))
 	// Output:
 	// (-Inf-Infs)
 	// (-Inf+Infs)
@@ -39,7 +39,7 @@ func ExampleInf() {
 }
 
 func ExampleNaN() {
-	fmt.Println(NaN())
+	fmt.Println(new(Complex).NaN())
 	// Output:
 	// (NaN+NaNs)
 }

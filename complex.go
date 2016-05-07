@@ -92,8 +92,7 @@ func (z *Complex) IsInf() bool {
 }
 
 // Inf returns a pointer to a split-complex infinity value.
-func Inf(a, b int) *Complex {
-	z := new(Complex)
+func (z *Complex) Inf(a, b int) *Complex {
 	z.SetReal(math.Inf(a))
 	z.SetImag(math.Inf(b))
 	return z
@@ -111,9 +110,8 @@ func (z *Complex) IsNaN() bool {
 }
 
 // NaN returns a pointer to a split-complex NaN value.
-func NaN() *Complex {
+func (z *Complex) NaN() *Complex {
 	nan := math.NaN()
-	z := new(Complex)
 	z.SetReal(nan)
 	z.SetImag(nan)
 	return z
