@@ -178,17 +178,16 @@ func (z *Complex) Inv(x *Complex) *Complex {
 	if x.IsZeroDiv() {
 		panic("zero divisor has no unique inverse")
 	}
-	return z.Scal(new(Complex).Conj(x), 1/x.Quad())
+	return z.Scal(z.Conj(x), 1/x.Quad())
 }
 
 // Quo sets z equal to the quotient x/y, and returns z. If y is a zero divisor,
 // then Quo panics.
 func (z *Complex) Quo(x, y *Complex) *Complex {
-	p := new(Complex)
 	if y.IsZeroDiv() {
 		panic("denominator is a zero divisor")
 	}
-	return z.Scal(p.Mul(x, p.Conj(y)), 1/y.Quad())
+	return z.Scal(z.Mul(x, z.Conj(y)), 1/y.Quad())
 }
 
 // Idempotent sets z equal to one of two possible idempotents (i.e. z = z*z).
