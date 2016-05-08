@@ -162,7 +162,8 @@ func (z *Complex) Mul(x, y *Complex) *Complex {
 // Quad returns the quadrance of z, which can be either positive, negative, or
 // zero.
 func (z *Complex) Quad() float64 {
-	return (new(Complex).Mul(z, new(Complex).Conj(z))).Real()
+	a, b := z.Real(), z.Imag()
+	return (a * a) - (b * b)
 }
 
 // IsZeroDiv returns true if z is a zero divisor (i.e. if z has vanishing
@@ -183,10 +184,11 @@ func (z *Complex) Inv(x *Complex) *Complex {
 // Quo sets z equal to the quotient x/y, and returns z. If y is a zero divisor,
 // then Quo panics.
 func (z *Complex) Quo(x, y *Complex) *Complex {
+	p := new(Complex)
 	if y.IsZeroDiv() {
 		panic("denominator is a zero divisor")
 	}
-	return z.Scal(new(Complex).Mul(x, new(Complex).Conj(y)), 1/y.Quad())
+	return z.Scal(p.Mul(x, p.Conj(y)), 1/y.Quad())
 }
 
 // Idempotent sets z equal to one of two possible idempotents (i.e. z = z*z).
