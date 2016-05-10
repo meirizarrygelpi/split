@@ -172,20 +172,20 @@ func (z *Complex) IsZeroDiv() bool {
 	return !notEquals(z.Quad(), 0)
 }
 
-// Inv sets z equal to the inverse of x, and returns z. If x is a zero divisor,
+// Inv sets z equal to the inverse of y, and returns z. If y is a zero divisor,
 // then Inv panics.
-func (z *Complex) Inv(x *Complex) *Complex {
-	if x.IsZeroDiv() {
-		panic("zero divisor has no unique inverse")
+func (z *Complex) Inv(y *Complex) *Complex {
+	if y.IsZeroDiv() {
+		panic("zero divisor inverse")
 	}
-	return z.Scal(z.Conj(x), 1/x.Quad())
+	return z.Scal(z.Conj(y), 1/y.Quad())
 }
 
 // Quo sets z equal to the quotient x/y, and returns z. If y is a zero divisor,
 // then Quo panics.
 func (z *Complex) Quo(x, y *Complex) *Complex {
 	if y.IsZeroDiv() {
-		panic("denominator is a zero divisor")
+		panic("zero divisor denominator")
 	}
 	return z.Scal(z.Mul(x, z.Conj(y)), 1/y.Quad())
 }

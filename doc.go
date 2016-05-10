@@ -8,5 +8,6 @@ const delta = 0.00000001
 
 // notEquals function.
 func notEquals(a, b float64) bool {
-	return ((a - b) > delta) || ((b - a) > delta)
+	// Need to implement a better way to compare float64 values.
+	return a != b
 }

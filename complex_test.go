@@ -15,6 +15,25 @@ var (
 	s    = &Complex{0, 1}
 )
 
+func Test_notEquals(t *testing.T) {
+	var tests = []struct {
+		a, b float64
+		want bool
+	}{
+		{1, 2, true},
+		{0, -0, false},
+		// {0.1, 0.09999999999, false},
+		{0.1, 0.09999999999, true},
+		// {0.8333333333333334, 0.8333333333333333, false},
+		{0.8333333333333334, 0.8333333333333333, true},
+	}
+	for _, test := range tests {
+		if got := notEquals(test.a, test.b); got != test.want {
+			t.Errorf("notEquals(%v, %v) = %v", test.a, test.b, got)
+		}
+	}
+}
+
 func ExampleNew() {
 	fmt.Println(New(1, 0))
 	fmt.Println(New(0, -1))
@@ -121,7 +140,8 @@ func TestCartesian(t *testing.T) {
 		{s, 0, 1},
 	}
 	for _, test := range tests {
-		if gotReal, gotImag := test.z.Cartesian(); notEquals(gotReal, test.wantReal) ||
+		gotReal, gotImag := test.z.Cartesian()
+		if notEquals(gotReal, test.wantReal) ||
 			notEquals(gotImag, test.wantImag) {
 			t.Errorf("Cartesian(%v) = %v, %v; want %v, %v",
 				test.z, gotReal, gotImag, test.wantReal, test.wantImag)
@@ -351,11 +371,27 @@ func TestSymmetry(t *testing.T) {
 		{&Complex{5, 6}, &Complex{7, 8}},
 	}
 	for _, test := range tests {
-		if !new(Complex).Add(test.x, test.y).Equals(new(Complex).Add(test.y, test.x)) {
+		l, r := new(Complex), new(Complex)
+		if !l.Add(test.x, test.y).Equals(r.Add(test.y, test.x)) {
 			t.Error("Add is not symmetric")
 		}
-		if !new(Complex).Mul(test.x, test.y).Equals(new(Complex).Mul(test.y, test.x)) {
+		if !l.Mul(test.x, test.y).Equals(r.Mul(test.y, test.x)) {
 			t.Error("Mul is not symmetric")
+		}
+	}
+}
+
+func TestAlternative(t *testing.T) {
+	var tests = []struct {
+		x, y *Complex
+	}{
+		{&Complex{1, 2}, &Complex{3, 4}},
+		{&Complex{5, 6}, &Complex{7, 8}},
+	}
+	for _, test := range tests {
+		l, r := new(Complex), new(Complex)
+		if !l.Sub(test.x, test.y).Equals(r.Sub(test.y, test.x).Neg(r)) {
+			t.Error("Sub is not alternative")
 		}
 	}
 }
@@ -395,7 +431,21 @@ func TestIsZeroDiv(t *testing.T) {
 	}
 }
 
-func TestInv(t *testing.T) {}
+func TestInv(t *testing.T) {
+	var tests = []struct {
+		z, want *Complex
+	}{
+		{one, one},
+		{s, s},
+		{&Complex{2, 0}, &Complex{0.5, 0}},
+		{&Complex{0, 2}, &Complex{0, 0.5}},
+	}
+	for _, test := range tests {
+		if got := new(Complex).Inv(test.z); !got.Equals(test.want) {
+			t.Errorf("Inv(%v) = %v, want %v", test.z, got, test.want)
+		}
+	}
+}
 
 func TestQuo(t *testing.T) {}
 
