@@ -11,32 +11,32 @@ import (
 
 // A Complex represents a split-complex number.
 type Complex struct {
-	a, b float64
+	re, im float64
 }
 
 // Real returns the real part of z, a float64 value.
 func (z *Complex) Real() float64 {
-	return z.a
+	return z.re
 }
 
 // Imag returns the imaginary part of z, a float64 value.
 func (z *Complex) Imag() float64 {
-	return z.b
+	return z.im
 }
 
 // SetReal sets the real part of z equal to a.
 func (z *Complex) SetReal(a float64) {
-	z.a = a
+	z.re = a
 }
 
 // SetImag sets the imaginary part of z equal to b.
 func (z *Complex) SetImag(b float64) {
-	z.b = b
+	z.im = b
 }
 
 // Cartesian returns the two Cartesian components of z.
 func (z *Complex) Cartesian() (a, b float64) {
-	a, b = z.a, z.b
+	a, b = z.re, z.im
 	return
 }
 
